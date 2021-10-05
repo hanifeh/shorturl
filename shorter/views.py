@@ -1,3 +1,9 @@
-from django.shortcuts import render
+from rest_framework.generics import CreateAPIView
+from .serializers import ShorterSerializer
 
-# Create your views here.
+
+class ShorterCreateAPIView(CreateAPIView):
+    """
+    create api view for create shorter object
+    """
+    serializer_class = ShorterSerializer

@@ -22,6 +22,10 @@ class ShorterSerializer(serializers.ModelSerializer):
         )
 
     def to_representation(self, instance):
+        """
+        add expire time to representation
+        add OTP if status is privet
+        """
         representation = super().to_representation(instance)
         representation['expire_time'] = instance.created_time + timedelta(minutes=representation.pop('validate_time'))
         if representation['status'] == 'privet':
@@ -29,7 +33,14 @@ class ShorterSerializer(serializers.ModelSerializer):
         return representation
 
     def validate(self, attrs):
+        """
+        check status is valid or raise error
+        check short url available or raise error
+        """
         status = attrs.get('status')
         if status and status not in StatusTypes.values:
             raise serializers.ValidationError('status must be public or privet.')
+        short_url = attrs.get('short_url')
+        if models.Shorter.objects.filter(short_url=short_url).exists():
+            raise serializers.ValidationError('short url used before.')
         return attrs

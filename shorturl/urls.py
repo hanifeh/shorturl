@@ -15,8 +15,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from shorter.views import ShorterListAPIView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('shorter/', include('shorter.urls')),
+    path('<str:shorter>', ShorterListAPIView.as_view(), name='redirect'),
 ]
